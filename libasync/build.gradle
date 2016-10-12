@@ -1,15 +1,26 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
+
+apply from: "$rootDir/version.gradle"
+apply from: "$rootDir/dependencies.gradle"
+
+logger.quiet("libasync-$VERSION_NAME ($VERSION_CODE)")
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    // do not modify. These fields are auto generated in dependencies.gradle
+    compileSdkVersion COMPILE_SDK_VERSION
+    buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        // do not modify. These fields are auto generated in dependencies.gradle
+        minSdkVersion MIN_SDK_VERSION
+        targetSdkVersion COMPILE_SDK_VERSION
+
+        // do not modify. These fields are auto generated in version.gradle
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+
+        buildConfigField "String", "VCS_BRANCH", "\"$VCS_BRANCH\""
+        buildConfigField "String", "VCS_REVISION", "\"$VCS_REVISION\""
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -23,12 +34,12 @@ android {
 }
 
 dependencies {
+    compile "com.android.support:support-annotations:$SUPPORT_LIB_VERSION"
     provided 'org.projectlombok:lombok:1.16.10'
-    apt 'org.projectlombok:lombok:1.16.10'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    annotationProcessor 'org.projectlombok:lombok:1.16.10'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:support-annotations:24.2.1'
 }

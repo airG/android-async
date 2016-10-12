@@ -1,14 +1,23 @@
 apply plugin: 'com.android.application'
 
+apply from: "$rootDir/dependencies.gradle"
+
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    // do not modify. These fields are auto generated in dependencies.gradle
+    compileSdkVersion COMPILE_SDK_VERSION
+    buildToolsVersion BUILD_TOOLS_VERSION
+
     defaultConfig {
         applicationId "com.airg.android.device"
-        minSdkVersion 9
-        targetSdkVersion 24
+
+        // do not modify. These fields are auto generated in dependencies.gradle
+        minSdkVersion MIN_SDK_VERSION
+        targetSdkVersion COMPILE_SDK_VERSION
+
+        // do not modify. These fields are auto generated in version.gradle
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,10 +29,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
+    testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    testCompile 'junit:junit:4.12'
 }

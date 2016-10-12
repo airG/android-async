@@ -1,0 +1,20 @@
+// Major version (0 until released then 1)
+def VERSION_MAJOR = 0;
+// Minor version
+def VERSION_MINOR = 1;
+// patch version
+def VERSION_PATCH = 0;
+// build count
+def VERSION_BUILD = 00;
+
+def gitBranchName = "git symbolic-ref -q --short HEAD".execute().text.trim()
+def gitShortHash = "git rev-parse --short HEAD".execute().text.trim()
+
+logger.info("Build time: %s", new Date().format('MMM dd yyyy K:mm:ss'))
+
+ext {
+    VERSION_CODE = VERSION_BUILD + (100 * VERSION_PATCH) + (10000 * VERSION_MINOR) + (100000 * VERSION_MAJOR)
+    VERSION_NAME = sprintf("%d.%02d.%02d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_BUILD)
+    VCS_BRANCH = gitBranchName
+    VCS_REVISION = gitShortHash
+}
