@@ -38,7 +38,7 @@ import lombok.Synchronized;
 @SuppressWarnings ( {"UnusedDeclaration", "WeakerAccess"})
 public final class ThreadPool {
 
-    public static final Executor UI         = new UIThreadExecutor ();
+    private static final Executor UI         = new UIThreadExecutor ();
     private static ExecutorService BACKGROUND;
 
     public static void fg (@NonNull final Runnable runnable) {

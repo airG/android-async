@@ -5,6 +5,30 @@ apply from: "$rootDir/dependencies.gradle"
 
 logger.quiet("libasync-$VERSION_NAME ($VERSION_CODE)")
 
+ext {
+    bintrayRepo = 'airGOss'
+    bintrayName = 'async'
+
+    publishedGroupId = 'com.airg.android'
+    libraryName = 'LibAsync'
+    artifact = 'async'
+
+    libraryDescription = 'Threadpools and utility methods for easier asynchronous task execution on Android.'
+
+    siteUrl = 'https://github.com/airG/android-async'
+    gitUrl = 'https://github.com/airG/android-async.git'
+
+    libraryVersion = VERSION_NAME
+
+    developerId = 'airG'
+    developerName = 'airG OpenSource'
+    developerEmail = 'opensource@airg.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     // do not modify. These fields are auto generated in dependencies.gradle
     compileSdkVersion COMPILE_SDK_VERSION
@@ -43,3 +67,6 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 }
+
+apply from: 'https://raw.githubusercontent.com/airG/JCenter/master/install.gradle'
+apply from: 'https://raw.githubusercontent.com/airG/JCenter/master/bintray.gradle'
