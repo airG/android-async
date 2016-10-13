@@ -1,4 +1,4 @@
- [ ![Download](https://api.bintray.com/packages/airg/airGOss/async/images/download.svg) ](https://bintray.com/airg/airGOss/async/_latestVersion)
+ [ ![Download](https://api.bintray.com/packages/airgoss/airGOss/async/images/download.svg) ](https://bintray.com/airgoss/airGOss/async/_latestVersion)
 
 #Android Async
 The airG android async library is a group of utilities for easier management of asynchronous tasks. This library provides an [Executor Service](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html) as an appropriately sized thread pool for background execution of tasks (`Threadpool.BACKGROUND`). An [Executor](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executor.html) is provided for executing tasks on the UI thread (`Threadpool.UI`).
