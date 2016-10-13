@@ -3,14 +3,15 @@ apply plugin: 'com.android.library'
 apply from: "$rootDir/version.gradle"
 apply from: "$rootDir/dependencies.gradle"
 
-logger.quiet("libasync-$VERSION_NAME ($VERSION_CODE)")
+logger.quiet("async-$VERSION_NAME ($VERSION_CODE)")
 
 ext {
+    bintrayOrg = 'airgoss'
     bintrayRepo = 'airGOss'
     bintrayName = 'async'
 
     publishedGroupId = 'com.airg.android'
-    libraryName = 'LibAsync'
+    libraryName = 'Android Async Utils'
     artifact = 'async'
 
     libraryDescription = 'Threadpools and utility methods for easier asynchronous task execution on Android.'
