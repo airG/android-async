@@ -23,16 +23,17 @@ import lombok.Synchronized;
 /**
  * An implementation of {@link Promise} that can be retrofitted into any asynchronous flow:
  * <ol>
- *     <li>Instantiate a {@link SimplePromise}</li>
- *     <li>Interact with the <code>SimplePromise</code> instance in your runnable running in the background</li>
- *     <li>Return the instantiated <code>SimplePromise</code> in the calling thread</li>
+ * <li>Instantiate a {@link SimplePromise}</li>
+ * <li>Interact with the <code>SimplePromise</code> instance in your runnable running in the background</li>
+ * <li>Return the instantiated <code>SimplePromise</code> in the calling thread</li>
  * </ol>
- * <code>
- *     public Promise&lt;MyResult&gt; getResultAsync () {
- *         final Promise&lt;MyResult&gt; promise = new SimplePromise&lt;MyResult&gt; ()
+ * <pre>
+ * {@code
+ *     public Promise<MyResult> getResultAsync () {
+ *         final Promise<MyResult> promise = new SimplePromise<MyResult> ()
  *
  *         executor.execute (new Runnable () {
- *             @Override public void run () {
+ *             public void run () {
  *                 try {
  *                     promise.done (getResultFromNetworkOrDiskOrWhatever ());
  *                 } catch (Exception e) {
@@ -43,7 +44,8 @@ import lombok.Synchronized;
  *
  *         return promise;
  *     }
- * </code>
+ * }
+ * </pre>
  * @author Mahram Z. Foadi
  */
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
@@ -61,11 +63,13 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     /**
      * Report task result and mark task as done
+     *
      * @param r obtained result
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public void done(final RESULT r) {
-        assertNotComplete ();
+        assertNotComplete();
 
         if (cancelled) return;
 
@@ -76,9 +80,11 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     /**
      * Mark task as failed and provide a cause
+     *
      * @param t cause of the failure
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public void failed(Throwable t) {
         assertNotComplete();
 
@@ -93,7 +99,8 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     /**
      * Mark task as cancelled
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public void cancelled() {
         if (done || failed) return;
 
@@ -103,9 +110,11 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     /**
      * Set completion callback
+     *
      * @param listener listener to notify on completion
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public void onComplete(OnCompleteListener<RESULT> listener) {
         onCompleteListener = listener;
         notifyDoneMaybe();
@@ -113,9 +122,11 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     /**
      * Set failure callback
+     *
      * @param listener listener to notify on failure.
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public void onFail(OnFailListener listener) {
         onFailListener = listener;
         notifyFailedMaybe();
@@ -123,9 +134,11 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     /**
      * Set cancellation callback
+     *
      * @param listener listener to notify on cancellation
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public void onCancel(OnCancelListener listener) {
         onCancelListener = listener;
         notifyCancelledMaybe();
@@ -133,27 +146,33 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     /**
      * Are we there yet?
+     *
      * @return <code>true</code> if task is complete and <code>false</code> otherwise
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public boolean isDone() {
         return done;
     }
 
     /**
      * Did the task fail?
+     *
      * @return <code>true</code> if failed and <code>false</code> otherwise
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public boolean isFailed() {
         return failed;
     }
 
     /**
      * Was the task cancelled?
+     *
      * @return <code>true</code> if cancelled and <code>false</code> otherwise
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public boolean isCancelled() {
         return cancelled;
     }
