@@ -23,7 +23,8 @@ import android.os.Build;
 import android.os.Looper;
 
 /**
- Created by mahra on 2016-09-22.
+ * Multi-thread utility methods
+ * @author Mahram Z. Foadi
  */
 @SuppressWarnings ( {"UnusedDeclaration", "WeakerAccess"})
 public final class AsyncHelper {
