@@ -5,6 +5,8 @@ The airG android async library is a group of utilities for easier management of 
 
 There are also a few utility methods (in `AsyncHelper`) to ensure that code is running __on__ or __off__ the UI thread.
 
+`compile 'com.airg.android:async:+@aar'`
+
 ##`Threadpool`
 The `Threadpool` class creates an appropriately sized thread pool on which you can schedule background tasks. If you'd like to override the size of this thread pool, call the `Threadpool.init(Threadpool.Config config)` method ___prior___ to using the executors.
 
