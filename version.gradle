@@ -1,7 +1,7 @@
 // Major version (0 until released then 1)
 def VERSION_MAJOR = 0;
 // Minor version
-def VERSION_MINOR = 6;
+def VERSION_MINOR = 7;
 // patch version
 def VERSION_PATCH = 0;
 

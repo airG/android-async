@@ -20,6 +20,8 @@ package com.airg.android.async;
 
 import android.support.annotation.NonNull;
 
+import com.airg.android.device.Device;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -74,6 +76,11 @@ public final class ThreadPool {
     }
 
     @Synchronized
+    public static Executor foreground () {
+        return UI;
+    }
+
+    @Synchronized
     public static void init (final Config config) {
         if (null != BACKGROUND)
             throw new IllegalStateException ("Thread pool already initialized. You should call this method before " +
@@ -83,7 +90,7 @@ public final class ThreadPool {
 
         final int poolSize = initConfig.overRidePoolSize > 0
                              ? initConfig.overRidePoolSize
-                             : Math.max (1, Runtime.getRuntime ().availableProcessors () - 1);
+                             : Math.max (1, Device.CPU_COUNT - 1);
         BACKGROUND = Executors.newFixedThreadPool (poolSize,
                                                    new CPUWorkerThreadFactory (initConfig.workerThreadNamePrefix,
                                                                                initConfig.backgroundThreadPriority));

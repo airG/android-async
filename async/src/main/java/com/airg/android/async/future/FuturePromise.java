@@ -35,36 +35,9 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     private OnCompleteListener<RESULT> onCompleteListener;
     private OnFailListener onFailListener;
     private OnCancelListener onCancelListener;
+    private RESULT result;
 
     private Throwable error = null;
-
-    /**
-     * Execution state of this task
-     */
-    public enum ExecutionState {
-        /**
-         * Task hasn't started running yet
-         */
-        Pending,
-        /**
-         * Task is running
-         */
-        Running,
-        /**
-         * Task is completed
-         */
-        Completed,
-        /**
-         * Task has failed
-         */
-        Failed,
-        /**
-         * Task has been cancelled
-         */
-        Cancelled
-    }
-
-    private ExecutionState executionState = ExecutionState.Pending;
 
     /**
      * Wrap a {@link Callable}
@@ -124,24 +97,19 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
         ));
     }
 
-    /**
-     * Get the execution state of this task
-     * @return current {@link ExecutionState}
-     */
-    public ExecutionState getExecutionState() {
-        return executionState;
+    public boolean succeeded () {
+        return isDone() && !(isFailed() || isCancelled());
     }
 
     // ---------- Promise bits ----------
 
     /**
-     * See {@link Promise#done(Object)}
+     * See {@link Promise#success(Object)}
      */
     @Synchronized
     @Override
-    public void done(final RESULT result) {
-        executionState = ExecutionState.Completed;
-        notifyDoneMaybe(result);
+    public void success(final RESULT r) {
+        result = r;
     }
 
     /**
@@ -150,7 +118,6 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     @Synchronized
     @Override
     public void failed(Throwable t) {
-        executionState = ExecutionState.Failed;
         error = t;
         notifyFailedMaybe();
     }
@@ -161,19 +128,19 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     @Synchronized
     @Override
     public void cancelled() {
-        executionState = ExecutionState.Cancelled;
         notifyCancelledMaybe();
     }
 
     /**
      * See {@link Promise#onComplete(OnCompleteListener)}
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public final void onComplete(final OnCompleteListener<RESULT> listener) {
         onCompleteListener = listener;
 
         try {
-            notifyDoneMaybe(get());
+            notifyDoneMaybe();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -182,7 +149,8 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     /**
      * See {@link Promise#onFail(OnFailListener)}
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public final void onFail(final OnFailListener listener) {
         onFailListener = listener;
         notifyFailedMaybe();
@@ -191,7 +159,8 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     /**
      * See {@link Promise#onCancel(OnCancelListener)}
      */
-    @Synchronized @Override
+    @Synchronized
+    @Override
     public final void onCancel(final OnCancelListener listener) {
         onCancelListener = listener;
         notifyCancelledMaybe();
@@ -203,7 +172,7 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     @Synchronized
     @Override
     public boolean isFailed() {
-        return executionState == ExecutionState.Failed;
+        return null != error;
     }
 
     // ---------- FutureTask bits ----------
@@ -213,37 +182,32 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
      */
     @Synchronized
     @Override
-    protected void set(RESULT result) {
+    protected void set(RESULT r) {
+        success(r);
         super.set(result);
-        done(result);
     }
 
     @Synchronized
     @Override
     protected void setException(Throwable t) {
-        super.setException(t);
         failed(t);
+        super.setException(t);
     }
 
-    @Synchronized
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
-        final boolean superCancel = super.cancel(mayInterruptIfRunning);
-        cancelled();
-        return superCancel;
-    }
+    protected void done() {
+        super.done();
 
-    @Synchronized
-    @Override
-    public void run() {
-        executionState = ExecutionState.Running;
-        super.run();
+        if (isCancelled())
+            cancelled();
+        else
+            notifyDoneMaybe();
     }
 
     // ---------- Private helper bits ----------
     @Synchronized
-    private void notifyDoneMaybe(final RESULT result) {
-        if (executionState != ExecutionState.Completed || null == onCompleteListener)
+    private void notifyDoneMaybe() {
+        if (!isDone() || null == onCompleteListener)
             return;
 
         onCompleteListener.onComplete(result);
@@ -251,14 +215,14 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
 
     @Synchronized
     private void notifyCancelledMaybe() {
-        if (executionState != ExecutionState.Cancelled || null == onCancelListener) return;
+        if (!isCancelled() || null == onCancelListener) return;
 
         onCancelListener.onCancelled();
     }
 
     @Synchronized
     private void notifyFailedMaybe() {
-        if (executionState != ExecutionState.Failed || null == onFailListener)
+        if (!isFailed() || null == onFailListener)
             return;
 
         onFailListener.onFailed(error);

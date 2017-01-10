@@ -35,7 +35,7 @@ import lombok.Synchronized;
  *         executor.execute (new Runnable () {
  *             public void run () {
  *                 try {
- *                     promise.done (getResultFromNetworkOrDiskOrWhatever ());
+ *                     promise.success (getResultFromNetworkOrDiskOrWhatever ());
  *                 } catch (Exception e) {
  *                     promise.failed (e);
  *                 }
@@ -68,7 +68,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
      */
     @Synchronized
     @Override
-    public void done(final RESULT r) {
+    public void success(final RESULT r) {
         assertNotComplete();
 
         if (cancelled) return;

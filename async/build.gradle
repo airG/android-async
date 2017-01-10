@@ -59,6 +59,7 @@ android {
 }
 
 dependencies {
+    compile 'com.airg.android:device:0.07.01'
     compile "com.android.support:support-annotations:$SUPPORT_LIB_VERSION"
     provided 'org.projectlombok:lombok:1.16.10'
     annotationProcessor 'org.projectlombok:lombok:1.16.10'

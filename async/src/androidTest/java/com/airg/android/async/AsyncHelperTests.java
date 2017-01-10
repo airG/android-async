@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 public class AsyncHelperTests {
     @Test
     public void isMainThreadFromMainThread () throws Exception {
-        final boolean ismain = runIsMainThreadOnExecutor (ThreadPool.UI);
+        final boolean ismain = runIsMainThreadOnExecutor (ThreadPool.foreground());
         assertTrue (ismain);
     }
 
@@ -50,7 +50,7 @@ public class AsyncHelperTests {
 
     @Test
     public void assertNotMainThreadOnMainThread () throws Exception {
-        final Exception e = runAssertNotMainThreadOnExecutor (ThreadPool.UI);
+        final Exception e = runAssertNotMainThreadOnExecutor (ThreadPool.foreground());
         assertNotNull (e);
         assertTrue (e instanceof IllegalStateException);
     }
@@ -63,7 +63,7 @@ public class AsyncHelperTests {
 
     @Test
     public void assertMainThreadOnMainThread () throws Exception {
-        final Exception e = runAssertMainThreadOnExecutor (ThreadPool.UI);
+        final Exception e = runAssertMainThreadOnExecutor (ThreadPool.foreground());
         assertNull (e);
     }
 

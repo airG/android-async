@@ -22,6 +22,8 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Looper;
 
+import com.airg.android.device.ApiLevel;
+
 /**
  * Multi-thread utility methods
  * @author Mahram Z. Foadi
@@ -30,7 +32,7 @@ import android.os.Looper;
 public final class AsyncHelper {
     @TargetApi (Build.VERSION_CODES.M)
     public static boolean isMainThread () {
-        return Build.VERSION_CODES.M >= Build.VERSION.SDK_INT
+        return ApiLevel.atLeast(Build.VERSION_CODES.M)
                ? Looper.getMainLooper ().isCurrentThread ()
                : Looper.myLooper () == Looper.getMainLooper ();
     }

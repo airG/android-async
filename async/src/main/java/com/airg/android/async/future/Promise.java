@@ -35,7 +35,7 @@ public interface Promise<RESULT> {
      * Report task completion
      * @param result Task result
      */
-    void done(RESULT result);
+    void success(RESULT result);
 
     /**
      * Report task failure
