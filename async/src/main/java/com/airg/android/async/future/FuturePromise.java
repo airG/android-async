@@ -101,6 +101,21 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
         return isDone() && !(isFailed() || isCancelled());
     }
 
+    public FuturePromise<RESULT> completed (final OnCompleteListener<RESULT> listener) {
+        onComplete(listener);
+        return this;
+    }
+
+    public FuturePromise<RESULT> failed (final OnFailListener listener) {
+        onFail(listener);
+        return this;
+    }
+
+    public FuturePromise<RESULT> cancelled (final OnCancelListener listener) {
+        onCancel(listener);
+        return this;
+    }
+
     // ---------- Promise bits ----------
 
     /**
