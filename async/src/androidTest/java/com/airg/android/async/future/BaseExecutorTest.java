@@ -1,6 +1,6 @@
 /*
  * ****************************************************************************
- *   Copyright  2016 airG Inc.                                                 *
+ *   Copyright  2017 airG Inc.                                                 *
  *                                                                             *
  *   Licensed under the Apache License, Version 2.0 (the "License");           *
  *   you may not use this file except in compliance with the License.          *
@@ -16,16 +16,46 @@
  * ***************************************************************************
  */
 
-package com.airg.android.async;
+package com.airg.android.async.future;
+
+import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- Created by mahra on 2016-09-22.
+ * Created by mahramf.
  */
+@RunWith(AndroidJUnit4.class)
+public class BaseExecutorTest {
+    final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-@RunWith (Suite.class)
-@Suite.SuiteClasses({AsyncHelper.class})
-public class InstrumentedUnitTests {
+    static final class EchoTask<VALUE> implements Callable<VALUE> {
+
+        private final VALUE value;
+        private final Exception exception;
+        private final long duration;
+
+        EchoTask(final VALUE v, final long dur) {
+            this(v, dur, null);
+        }
+
+        EchoTask(final VALUE v, final long dur, final Exception e) {
+            value = v;
+            duration = dur;
+            exception = e;
+        }
+
+        @Override
+        public VALUE call() throws Exception {
+            Thread.sleep(duration);
+
+            if (null != exception) throw exception;
+
+            return value;
+        }
+    }
 }

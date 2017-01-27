@@ -18,8 +18,8 @@
 
 package com.airg.android.async.future;
 
-import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import lombok.Synchronized;
@@ -32,12 +32,7 @@ import lombok.Synchronized;
  */
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
 public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements Promise<RESULT> {
-    private OnCompleteListener<RESULT> onCompleteListener;
-    private OnFailListener onFailListener;
-    private OnCancelListener onCancelListener;
-    private RESULT result;
-
-    private Throwable error = null;
+    private final SimplePromise<RESULT> delegate = new SimplePromise<>();
 
     /**
      * Wrap a {@link Callable}
@@ -51,99 +46,50 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     /**
      * Wrap a {@link Runnable}
      *
-     * @param runnable Runnable to get the result from
-     * @param result   The result placeholder
+     * @param runnable     Runnable to get the result from
+     * @param resultHolder The result placeholder
      */
-    public FuturePromise(Runnable runnable, RESULT result) {
-        super(runnable, result);
+    public FuturePromise(Runnable runnable, RESULT resultHolder) {
+        super(runnable, resultHolder);
     }
 
     /**
-     * Set all callbacks at once
+     * Was the promise successfully completed?
      *
-     * @param callback An instance of a class that implements {@link com.airg.android.async.future.Promise.OnCompleteListener},
-     *                 {@link com.airg.android.async.future.Promise.OnFailListener}, or
-     *                 {@link com.airg.android.async.future.Promise.OnCancelListener}.
-     * @throws IllegalArgumentException if the provided callback implements neither
-     *                                  {@link com.airg.android.async.future.Promise.OnCompleteListener},
-     *                                  {@link com.airg.android.async.future.Promise.OnFailListener}, or
-     *                                  {@link com.airg.android.async.future.Promise.OnCancelListener}
+     * @return <code>true</code> if task was able to successfully obtain a result, <code>false</code> otherwise
      */
-    @Synchronized
-    public final void setCallback(final Object callback) {
-        int count = 0;
-        if (callback instanceof OnCompleteListener) {
-            //noinspection unchecked
-            onComplete((OnCompleteListener<RESULT>) callback);
-            count++;
-        }
-
-        if (callback instanceof OnFailListener) {
-            onFail((OnFailListener) callback);
-            count++;
-        }
-
-        if (callback instanceof OnCancelListener) {
-            onCancel((OnCancelListener) callback);
-            count++;
-        }
-
-        if (0 == count) throw new IllegalArgumentException(String.format(Locale.ENGLISH,
-                "'%s' does not implement '%s', '%s', or '%s'",
-                callback.getClass().getSimpleName(),
-                OnCompleteListener.class.getCanonicalName(),
-                OnFailListener.class.getCanonicalName(),
-                OnCancelListener.class.getCanonicalName()
-        ));
-    }
-
-    public boolean succeeded () {
+    @Override
+    public boolean succeeded() {
         return isDone() && !(isFailed() || isCancelled());
-    }
-
-    public FuturePromise<RESULT> completed (final OnCompleteListener<RESULT> listener) {
-        onComplete(listener);
-        return this;
-    }
-
-    public FuturePromise<RESULT> failed (final OnFailListener listener) {
-        onFail(listener);
-        return this;
-    }
-
-    public FuturePromise<RESULT> cancelled (final OnCancelListener listener) {
-        onCancel(listener);
-        return this;
     }
 
     // ---------- Promise bits ----------
 
     /**
-     * See {@link Promise#success(Object)}
+     * DO NOT CALL. This isn't yours to call.
      */
     @Synchronized
     @Override
-    public void success(final RESULT r) {
-        result = r;
+    public void success(final RESULT ignored) {
+        throw new UnsupportedOperationException("Only this task can set the result");
     }
 
     /**
-     * See {@link Promise#failed(Throwable)}
+     * DO NOT CALL. This isn't yours to call.
      */
     @Synchronized
     @Override
-    public void failed(Throwable t) {
-        error = t;
-        notifyFailedMaybe();
+    public void failed(final Throwable t) {
+        throw new UnsupportedOperationException("Only this task can set the exception");
     }
 
     /**
-     * See {@link Promise#cancelled()}
+     * DO NOT CALL. This isn't yours to call.
      */
     @Synchronized
     @Override
     public void cancelled() {
-        notifyCancelledMaybe();
+        throw new UnsupportedOperationException("Only this task can set the cancelled flag");
     }
 
     /**
@@ -151,14 +97,9 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
      */
     @Synchronized
     @Override
-    public final void onComplete(final OnCompleteListener<RESULT> listener) {
-        onCompleteListener = listener;
-
-        try {
-            notifyDoneMaybe();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public final FuturePromise<RESULT> onComplete(final OnCompleteListener<RESULT> listener) {
+        delegate.onComplete(listener);
+        return this;
     }
 
     /**
@@ -166,9 +107,9 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
      */
     @Synchronized
     @Override
-    public final void onFail(final OnFailListener listener) {
-        onFailListener = listener;
-        notifyFailedMaybe();
+    public final FuturePromise<RESULT> onFail(final OnFailListener listener) {
+        delegate.onFail(listener);
+        return this;
     }
 
     /**
@@ -176,9 +117,9 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
      */
     @Synchronized
     @Override
-    public final void onCancel(final OnCancelListener listener) {
-        onCancelListener = listener;
-        notifyCancelledMaybe();
+    public final FuturePromise<RESULT> onCancel(final OnCancelListener listener) {
+        delegate.onCancel(listener);
+        return this;
     }
 
     /**
@@ -187,59 +128,25 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     @Synchronized
     @Override
     public boolean isFailed() {
-        return null != error;
+        return delegate.isFailed();
     }
 
     // ---------- FutureTask bits ----------
 
-    /**
-     * See {@link FutureTask#set(Object)}
-     */
     @Synchronized
-    @Override
-    protected void set(RESULT r) {
-        success(r);
-        super.set(result);
-    }
-
-    @Synchronized
-    @Override
-    protected void setException(Throwable t) {
-        failed(t);
-        super.setException(t);
-    }
-
     @Override
     protected void done() {
         super.done();
 
         if (isCancelled())
-            cancelled();
+            delegate.cancelled();
         else
-            notifyDoneMaybe();
-    }
-
-    // ---------- Private helper bits ----------
-    @Synchronized
-    private void notifyDoneMaybe() {
-        if (!isDone() || null == onCompleteListener)
-            return;
-
-        onCompleteListener.onComplete(result);
-    }
-
-    @Synchronized
-    private void notifyCancelledMaybe() {
-        if (!isCancelled() || null == onCancelListener) return;
-
-        onCancelListener.onCancelled();
-    }
-
-    @Synchronized
-    private void notifyFailedMaybe() {
-        if (!isFailed() || null == onFailListener)
-            return;
-
-        onFailListener.onFailed(error);
+            try {
+                delegate.success(get());
+            } catch (ExecutionException ee) {
+                delegate.failed(ee.getCause());
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to get result", e);
+            }
     }
 }

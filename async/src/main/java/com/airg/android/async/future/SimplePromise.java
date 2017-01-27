@@ -46,6 +46,7 @@ import lombok.Synchronized;
  *     }
  * }
  * </pre>
+ *
  * @author Mahram Z. Foadi
  */
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
@@ -54,12 +55,11 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     private OnFailListener onFailListener;
     private OnCancelListener onCancelListener;
 
-    private Throwable error = null;
-    private RESULT result = null;
+    private volatile Throwable error = null;
+    private volatile RESULT result = null;
 
-    private boolean done = false;
-    private boolean failed = false;
-    private boolean cancelled = false;
+    private volatile boolean done = false;
+    private volatile boolean cancelled = false;
 
     /**
      * Report task result and mark task as done
@@ -73,8 +73,8 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
         if (cancelled) return;
 
+        done= true;
         result = r;
-        done = true;
         notifyDoneMaybe();
     }
 
@@ -92,7 +92,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
             return;
 
         error = t;
-        failed = true;
+        done = true;
         notifyFailedMaybe();
     }
 
@@ -102,9 +102,10 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     @Synchronized
     @Override
     public void cancelled() {
-        if (done || failed) return;
+        if (isDone() || isFailed()) return;
 
         cancelled = true;
+        done = true;
         notifyCancelledMaybe();
     }
 
@@ -112,36 +113,42 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
      * Set completion callback
      *
      * @param listener listener to notify on completion
+     * @return this {@link Promise} to chain more callbacks
      */
     @Synchronized
     @Override
-    public void onComplete(OnCompleteListener<RESULT> listener) {
+    public SimplePromise<RESULT> onComplete(OnCompleteListener<RESULT> listener) {
         onCompleteListener = listener;
         notifyDoneMaybe();
+        return this;
     }
 
     /**
      * Set failure callback
      *
      * @param listener listener to notify on failure.
+     * @return this {@link Promise} to chain more callbacks
      */
     @Synchronized
     @Override
-    public void onFail(OnFailListener listener) {
+    public SimplePromise<RESULT> onFail(OnFailListener listener) {
         onFailListener = listener;
         notifyFailedMaybe();
+        return this;
     }
 
     /**
      * Set cancellation callback
      *
      * @param listener listener to notify on cancellation
+     * @return this {@link Promise} to chain more callbacks
      */
     @Synchronized
     @Override
-    public void onCancel(OnCancelListener listener) {
+    public SimplePromise<RESULT> onCancel(OnCancelListener listener) {
         onCancelListener = listener;
         notifyCancelledMaybe();
+        return this;
     }
 
     /**
@@ -156,6 +163,16 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     }
 
     /**
+     * Was the promise successfully completed?
+     *
+     * @return <code>true</code> if task was able to successfully obtain a result, <code>false</code> otherwise
+     */
+    @Override
+    public boolean succeeded() {
+        return done && null != result;
+    }
+
+    /**
      * Did the task fail?
      *
      * @return <code>true</code> if failed and <code>false</code> otherwise
@@ -163,7 +180,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     @Synchronized
     @Override
     public boolean isFailed() {
-        return failed;
+        return done && null != error;
     }
 
     /**
@@ -180,7 +197,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     // ---------- Private helper bits ----------
 
     private void assertNotComplete() {
-        if (done || failed)
+        if (done)
             throw new IllegalStateException("Already marked as " + (done ? "done" : "failed"));
     }
 
@@ -194,7 +211,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     @Synchronized
     private void notifyFailedMaybe() {
-        if (!failed || null == onFailListener)
+        if (!isFailed() || null == onFailListener)
             return;
 
         onFailListener.onFailed(error);

@@ -51,8 +51,12 @@ final class CPUWorkerThreadFactory
     @Override public Thread newThread (@NonNull final Runnable runnable) {
         final Thread thread = new Thread (runnable);
         thread.setDaemon (true);
-        thread.setName (String.format (Locale.ENGLISH, "%s[%s]", namePrefix, nameCounter.getAndIncrement ()));
+        thread.setName (workerName(namePrefix, nameCounter.getAndIncrement ()));
         thread.setPriority (threadPriority);
         return thread;
+    }
+
+    static String workerName (final String name, final int number) {
+        return String.format (Locale.ENGLISH, "%s[%s]", name, number);
     }
 }

@@ -33,12 +33,14 @@ public interface Promise<RESULT> {
 
     /**
      * Report task completion
+     *
      * @param result Task result
      */
     void success(RESULT result);
 
     /**
      * Report task failure
+     *
      * @param t cause of the failure
      */
     void failed(@Nullable Throwable t);
@@ -50,48 +52,66 @@ public interface Promise<RESULT> {
 
     /**
      * Add an {@link OnCompleteListener} callback to be notified of completion
+     *
      * @param listener listener to notify on completion
+     * @return this instance to chain more callbacks
      */
-    void onComplete(final OnCompleteListener<RESULT> listener);
+    Promise<RESULT> onComplete(final OnCompleteListener<RESULT> listener);
 
     /**
      * Add an {@link OnFailListener} callback to be notified on failure
+     *
      * @param listener listener to notify on failure.
+     * @return this instance to chain more callbacks
      */
-    void onFail(final OnFailListener listener);
+    Promise<RESULT> onFail(final OnFailListener listener);
 
     /**
      * Add on {@link OnCancelListener} callback to be notified on cancellation
+     *
      * @param listener listener to notify on cancellation
+     * @return this instance to chain more callbacks
      */
-    void onCancel(final OnCancelListener listener);
+    Promise<RESULT> onCancel(final OnCancelListener listener);
 
     /**
      * Are we there yet?
-     * @return <code>true</code> if task has run to completion, <code>false</code> otherwise
+     *
+     * @return <code>true</code> if task has run to completion (including due to failure or cancellation), <code>false</code> otherwise
      */
     boolean isDone();
 
     /**
+     * Was the promise successfully completed?
+     *
+     * @return <code>true</code> if task was able to successfully obtain a result, <code>false</code> otherwise
+     */
+    boolean succeeded();
+
+    /**
      * Did you keep your promise?
+     *
      * @return <code>true</code> if task has failed, <code>false</code> otherwise
      */
     boolean isFailed();
 
     /**
      * Is the task cancelled?
+     *
      * @return <code>true</code> if task has been cancelled, <code>false</code> otherwise
      */
     boolean isCancelled();
 
     /**
      * Task completion callback
+     *
      * @param <RESULT> Expected result
      */
     interface OnCompleteListener<RESULT> {
 
         /**
          * Task completed
+         *
          * @param result task result
          */
         void onComplete(RESULT result);
@@ -103,6 +123,7 @@ public interface Promise<RESULT> {
     interface OnFailListener {
         /**
          * Task failed
+         *
          * @param error failure cause
          */
         void onFailed(Throwable error);
