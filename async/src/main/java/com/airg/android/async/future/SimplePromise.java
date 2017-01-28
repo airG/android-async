@@ -18,6 +18,11 @@
 
 package com.airg.android.async.future;
 
+import android.support.annotation.Nullable;
+
+import java.util.concurrent.Executor;
+
+import lombok.EqualsAndHashCode;
 import lombok.Synchronized;
 
 /**
@@ -50,6 +55,7 @@ import lombok.Synchronized;
  * @author Mahram Z. Foadi
  */
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
+@EqualsAndHashCode
 public final class SimplePromise<RESULT> implements Promise<RESULT> {
     private OnCompleteListener<RESULT> onCompleteListener;
     private OnFailListener onFailListener;
@@ -60,6 +66,16 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     private volatile boolean done = false;
     private volatile boolean cancelled = false;
+
+    private final Executor callbackExecutor;
+
+    public SimplePromise() {
+        this(null);
+    }
+
+    public SimplePromise(@Nullable final Executor executor) {
+        callbackExecutor = executor;
+    }
 
     /**
      * Report task result and mark task as done
@@ -73,7 +89,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
         if (cancelled) return;
 
-        done= true;
+        done = true;
         result = r;
         notifyDoneMaybe();
     }
@@ -197,8 +213,8 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     // ---------- Private helper bits ----------
 
     private void assertNotComplete() {
-        if (done)
-            throw new IllegalStateException("Already marked as " + (done ? "done" : "failed"));
+        if (isDone())
+            throw new IllegalStateException("Already marked as " + (null == error ? "done" : "failed"));
     }
 
     @Synchronized
@@ -206,7 +222,12 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
         if (!done || null == onCompleteListener)
             return;
 
-        onCompleteListener.onComplete(result);
+        runOnExecutor(new Runnable() {
+            @Override
+            public void run() {
+                onCompleteListener.onComplete(result);
+            }
+        }, callbackExecutor);
     }
 
     @Synchronized
@@ -214,7 +235,12 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
         if (!isFailed() || null == onFailListener)
             return;
 
-        onFailListener.onFailed(error);
+        runOnExecutor(new Runnable() {
+            @Override
+            public void run() {
+                onFailListener.onFailed(error);
+            }
+        }, callbackExecutor);
     }
 
     @Synchronized
@@ -222,6 +248,17 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
         if (!cancelled || null == onCancelListener)
             return;
 
-        onCancelListener.onCancelled();
+        runOnExecutor(new Runnable() {
+            @Override
+            public void run() {
+                onCancelListener.onCancelled();
+            }
+        }, callbackExecutor);
+    }
+
+    private static void runOnExecutor(final Runnable task, final Executor executor) {
+        if (null == executor)
+            task.run();
+        else executor.execute(task);
     }
 }

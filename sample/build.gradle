@@ -8,7 +8,7 @@ android {
     buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        applicationId "com.airg.android.device"
+        applicationId "com.airg.android.async.sample"
 
         // do not modify. These fields are auto generated in dependencies.gradle
         minSdkVersion MIN_SDK_VERSION
@@ -29,7 +29,16 @@ android {
 }
 
 dependencies {
+    compile project(':async')
+    compile 'com.airg.android:misc:0.01.02@aar'
+    compile 'com.airg.android:logger:0.05.00@aar'
     compile "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
+    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
+    provided "org.projectlombok:lombok:$LOMBOK_VERSION"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
+    annotationProcessor "org.projectlombok:lombok:$LOMBOK_VERSION"
+
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

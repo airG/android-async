@@ -20,6 +20,7 @@ package com.airg.android.async.future;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 
 import lombok.Synchronized;
@@ -32,7 +33,7 @@ import lombok.Synchronized;
  */
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
 public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements Promise<RESULT> {
-    private final SimplePromise<RESULT> delegate = new SimplePromise<>();
+    private final SimplePromise<RESULT> delegate;
 
     /**
      * Wrap a {@link Callable}
@@ -40,7 +41,17 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
      * @param callable callable to get the result from
      */
     public FuturePromise(Callable<RESULT> callable) {
+        this(callable, null);
+    }
+
+    /**
+     * Wrap a {@link Callable}
+     *
+     * @param callable callable to get the result from
+     */
+    public FuturePromise(Callable<RESULT> callable, final Executor executor) {
         super(callable);
+        delegate = new SimplePromise<>(executor);
     }
 
     /**
@@ -50,7 +61,18 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
      * @param resultHolder The result placeholder
      */
     public FuturePromise(Runnable runnable, RESULT resultHolder) {
+        this(runnable, resultHolder, null);
+    }
+
+    /**
+     * Wrap a {@link Runnable}
+     *
+     * @param runnable     Runnable to get the result from
+     * @param resultHolder The result placeholder
+     */
+    public FuturePromise(Runnable runnable, RESULT resultHolder, final Executor executor) {
         super(runnable, resultHolder);
+        delegate = new SimplePromise<>(executor);
     }
 
     /**

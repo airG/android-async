@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Device</string>
+    <string name="app_name">libAsync Sample</string>
+    <string name="reload">Reload</string>
+    <string name="image_load_failed">Image load failed</string>
+    <string name="reload_future_promise">Reload top image</string>
+    <string name="future_promise">This image is loaded via a FuturePromise</string>
+    <string name="simple_promise">This image is loaded via a SimplePromise</string>
+    <string name="reload_simple_promise">Reload bottom image</string>
 </resources>

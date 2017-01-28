@@ -18,7 +18,13 @@
 
 package com.airg.android.async.future;
 
+import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
+
+import com.airg.android.async.ThreadPool;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,9 +37,10 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by mahramf.
  */
+@RunWith(AndroidJUnit4.class)
 public class SimplePromiseTest extends BaseExecutorTest {
     @Test
-    public void normalExecution() throws InterruptedException, ExecutionException {
+    public void successfulExecution() throws InterruptedException, ExecutionException {
         final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
         final AtomicReference<String> result = new AtomicReference<>();
 
@@ -52,7 +59,7 @@ public class SimplePromiseTest extends BaseExecutorTest {
         });
 
         assertFalse(promise.isDone());
-        executor.execute(new EchoTaskRunner<>(new EchoTask<>(secret, 200), promise));
+        ThreadPool.bg(new EchoTaskRunner<>(new EchoTask<>(secret, 200), promise));
 
         // wait for task to finish
         synchronized (onCompleteCalled) {
@@ -68,6 +75,38 @@ public class SimplePromiseTest extends BaseExecutorTest {
     }
 
     @Test
+    public void lateListenerSuccessExecution() throws InterruptedException, ExecutionException {
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicReference<String> result = new AtomicReference<>();
+
+        final String secret = "My listener is late";
+
+        final SimplePromise<String> promise = new SimplePromise<>();
+
+        assertFalse(promise.isDone());
+
+        ThreadPool.bg(new EchoTaskRunner<>(new EchoTask<>(secret, 300), promise));
+
+        // wait for task to finish
+        Thread.sleep(1000);
+
+        assertTrue("Task should be done", promise.isDone());
+
+        promise.onComplete(new Promise.OnCompleteListener<String>() {
+            @Override
+            public void onComplete(final String response) {
+                result.set(response);
+                onCompleteCalled.set(true);
+            }
+        });
+
+        // We gave it enough time, didn't we? If not called by now, it never will
+        assertTrue("Task should have completed", onCompleteCalled.get());
+        assertFalse("Task should have succeeded", promise.isFailed());
+        assertEquals("Task should have returned the original secret", secret, result.get());
+    }
+
+    @Test
     public void cancelMidExecution() throws InterruptedException, ExecutionException {
         final AtomicBoolean lock = new AtomicBoolean();
         final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
@@ -75,7 +114,6 @@ public class SimplePromiseTest extends BaseExecutorTest {
 
         final SimplePromise<Void> promise = new SimplePromise<>();
         final long taskRuntime = 1000;
-        final EchoTaskRunner<Void> task = new EchoTaskRunner<>(new EchoTask<Void>(null, taskRuntime), promise);
 
         promise.onComplete(new Promise.OnCompleteListener<Void>() {
             @Override
@@ -98,7 +136,10 @@ public class SimplePromiseTest extends BaseExecutorTest {
         });
 
         assertFalse(promise.isDone());
-        executor.execute(task);
+
+        final EchoTaskRunner<Void> task = new EchoTaskRunner<>(new EchoTask<Void>(null, taskRuntime), promise);
+        ThreadPool.bg(task);
+
         assertFalse(promise.isDone());
 
         Thread.sleep(taskRuntime / 4);
@@ -118,6 +159,42 @@ public class SimplePromiseTest extends BaseExecutorTest {
         assertTrue("Task should have been cancelled", promise.isCancelled());
     }
 
+    @Test
+    public void lateListenerCancelMidExecution() throws InterruptedException, ExecutionException {
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean onCancelledCalled = new AtomicBoolean(false);
+
+        final SimplePromise<Void> promise = new SimplePromise<>();
+        final long taskRuntime = 1000;
+        final EchoTaskRunner<Void> task = new EchoTaskRunner<>(new EchoTask<Void>(null, taskRuntime), promise);
+
+        assertFalse(promise.isDone());
+        ThreadPool.bg(task);
+        assertFalse(promise.isDone());
+
+        Thread.sleep(taskRuntime / 4);
+        task.cancel();
+
+        assertTrue("Task should be done", promise.isDone());
+        assertTrue("Task should have been cancelled", promise.isCancelled());
+        assertFalse("Task should NOT have failed", promise.isFailed());
+
+        promise.onComplete(new Promise.OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(final Void ignore) {
+                onCompleteCalled.set(true);
+            }
+        }).onCancel(new Promise.OnCancelListener() {
+            @Override
+            public void onCancelled() {
+                onCancelledCalled.set(true);
+            }
+        });
+
+        assertTrue("Task should NOT have completed", onCompleteCalled.get());
+        assertTrue("Task should have cancelled", onCancelledCalled.get());
+    }
+
     @Test(expected = RuntimeException.class)
     public void failedExecution() throws InterruptedException {
         final AtomicBoolean lock = new AtomicBoolean();
@@ -128,7 +205,6 @@ public class SimplePromiseTest extends BaseExecutorTest {
         final String failMsg = "Failz";
         final SimplePromise<Boolean> promise = new SimplePromise<>();
 
-        final EchoTaskRunner<Boolean> task = new EchoTaskRunner<>(new EchoTask<>(true, 200, new RuntimeException(failMsg)), promise);
         promise.onComplete(new Promise.OnCompleteListener<Boolean>() {
             @Override
             public void onComplete(Boolean aBoolean) {
@@ -151,7 +227,7 @@ public class SimplePromiseTest extends BaseExecutorTest {
         });
 
         assertFalse(promise.isDone());
-        executor.execute(task);
+        ThreadPool.bg(new EchoTaskRunner<>(new EchoTask<>(true, 200, new RuntimeException(failMsg)), promise));
 
         // wait for task to finish
         synchronized (lock) {
@@ -169,6 +245,46 @@ public class SimplePromiseTest extends BaseExecutorTest {
         throw t;
     }
 
+    @Test(expected = RuntimeException.class)
+    public void lateListenerFailedExecution() throws InterruptedException {
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean onFailedCalled = new AtomicBoolean(false);
+        final AtomicReference<Throwable> error = new AtomicReference<>(null);
+
+        final String failMsg = "Failz";
+        final SimplePromise<Boolean> promise = new SimplePromise<>();
+        final EchoTaskRunner<Boolean> task = new EchoTaskRunner<>(new EchoTask<>(true, 200, new RuntimeException(failMsg)), promise);
+
+        assertFalse(promise.isDone());
+        ThreadPool.bg(task);
+
+        Thread.sleep(1000);
+
+        assertTrue("Task should be done", promise.isDone());
+        assertFalse("Task should NOT have succeeded", promise.succeeded());
+
+        promise.onComplete(new Promise.OnCompleteListener<Boolean>() {
+            @Override
+            public void onComplete(Boolean aBoolean) {
+                onCompleteCalled.set(true);
+            }
+        }).onFail(new Promise.OnFailListener() {
+            @Override
+            public void onFailed(Throwable t) {
+                onFailedCalled.set(true);
+                error.set(t);
+            }
+        });
+
+        // We gave it enough time, didn't we? If not called by now, it never will
+        assertTrue("Task should have failed", onFailedCalled.get());
+
+
+        final RuntimeException t = (RuntimeException) error.get();
+        assertEquals(failMsg, t.getMessage());
+        throw t;
+    }
+
     private static class EchoTaskRunner<VALUE> implements Runnable {
 
         private final EchoTask<VALUE> task;
@@ -179,15 +295,20 @@ public class SimplePromiseTest extends BaseExecutorTest {
             promise = p;
         }
 
-        void cancel () {
+        void cancel() {
             promise.cancelled();
         }
 
         @Override
         public void run() {
             try {
-                promise.success(task.call());
+                Log.i("ETR", "Echo task starting...");
+                final VALUE result = task.call();
+                Log.i("ETR", "Echo task finished: " + result);
+                promise.success(result);
             } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("ETR", "Echo task failed");
                 promise.failed(e);
             }
         }

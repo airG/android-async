@@ -20,6 +20,8 @@ package com.airg.android.async.future;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.airg.android.async.ThreadPool;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,7 +54,7 @@ public final class FuturePromiseTests extends BaseExecutorTest {
         });
 
         assertFalse(promise.isDone());
-        executor.execute(promise);
+        ThreadPool.bg(promise);
 
         // wait for task to finish
         synchronized (onCompleteCalled) {
@@ -97,7 +99,7 @@ public final class FuturePromiseTests extends BaseExecutorTest {
         });
 
         assertFalse(promise.isDone());
-        executor.execute(promise);
+        ThreadPool.bg(promise);
 
         // wait for task to finish
         synchronized (onCompleteCalled) {
@@ -143,7 +145,7 @@ public final class FuturePromiseTests extends BaseExecutorTest {
         });
 
         assertFalse(promise.isDone());
-        executor.execute(promise);
+        ThreadPool.bg(promise);
         assertFalse(promise.isDone());
 
         Thread.sleep(100);
@@ -195,7 +197,7 @@ public final class FuturePromiseTests extends BaseExecutorTest {
         });
 
         assertFalse(promise.isDone());
-        executor.execute(promise);
+        ThreadPool.bg(promise);
 
         // wait for task to finish
         synchronized (lock) {

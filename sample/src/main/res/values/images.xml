@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*****************************************************************************
+  ~ *  Copyright  2017 airG Inc.                                                 *
+  ~ *                                                                            *
+  ~ *  Licensed under the Apache License, Version 2.0 (the "License");           *
+  ~ *  you may not use this file except in compliance with the License.          *
+  ~ *  You may obtain a copy of the License at                                   *
+  ~ *                                                                            *
+  ~ *      http://www.apache.org/licenses/LICENSE-2.0                            *
+  ~ *                                                                            *
+  ~ *  Unless required by applicable law or agreed to in writing, software       *
+  ~ *  distributed under the License is distributed on an "AS IS" BASIS,         *
+  ~ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  *
+  ~ *  See the License for the specific language governing permissions and       *
+  ~ *  limitations under the License.                                            *
+  ~ *****************************************************************************/
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="imageUris">
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3900/14378892662_b11b11e87a_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm3.staticflickr.com/2898/14378897582_b4dd1c1e61_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3838/14379379364_d7f90a56cc_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm6.staticflickr.com/5490/14377014721_770c56885a_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3769/14082984478_bb7907985a_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm3.staticflickr.com/2936/14082989818_aa1dae864a_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm8.staticflickr.com/7396/14139922472_07db1ab3c7_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm8.staticflickr.com/7338/13956152397_fb59ed6b43_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm8.staticflickr.com/7373/13956344039_29fedfc6da_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm8.staticflickr.com/7413/14119666386_93895717f1_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm8.staticflickr.com/7300/14120758554_39350042e4_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm3.staticflickr.com/2908/13933801738_73d25b4953_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm8.staticflickr.com/7324/14119762755_d59356a6f8_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm6.staticflickr.com/5194/14139833363_c7105930b3_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm8.staticflickr.com/7317/13933198069_58847aae26_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm6.staticflickr.com/5157/13933169220_98be4abc39_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm3.staticflickr.com/2927/14139913653_9a7a03a7ed_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm6.staticflickr.com/5344/10167067853_f5e713e030_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3774/10167122735_1aac1f77c2_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3700/10165441826_911db6ef08_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm3.staticflickr.com/2837/10153432015_15604db25f_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3719/9559181953_1515c4a3b3_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3668/9527107763_54a8d230ab_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm6.staticflickr.com/5488/9509064282_1a3a80c78a_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3707/9509079456_57e432a103_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3795/9506302435_0396799476_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3682/9442646614_16c038e92f_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3791/9288885061_fcfd65e949_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm6.staticflickr.com/5451/9288921385_67d5377c87_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm4.staticflickr.com/3674/9291726824_5410d2cbe3_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://farm3.staticflickr.com/2876/9091626640_9c8d899b65_z.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://lh4.googleusercontent.com/-pCSNJqj16y4/U2yDCFLzR1I/AAAAAAAAknw/jo07-88TX5g/w435-h652-no/_DSC1503.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://lh5.googleusercontent.com/-1CNuae2Sjg4/U2yDjEzsI-I/AAAAAAAAkjs/bp66xSVZS2c/w978-h652-no/_DSC1523.jpg]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://lh4.googleusercontent.com/-dFdy6PsCX4M/Ubbysaboy6I/AAAAAAAAb64/p1-3-pDZY_k/w981-h652-no/_DSC0841.JPG]]></item>
+        <item tools:ignore="TypographyDashes"><![CDATA[https://lh3.googleusercontent.com/-EMUolsezUZ0/UbWWhagqiPI/AAAAAAAAVgM/0UTU-d86rR0/w1159-h652-no/IMGP0195.JPG"]]></item>
+    </string-array>
+</resources>
