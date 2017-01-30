@@ -17,31 +17,9 @@
   ~ *****************************************************************************/
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_check_thread"
-        android:icon="@drawable/ic_action_check_thread"
-        android:title="@string/check_thread"
-        app:showAsAction="always"
-        />
-    <item
-        android:id="@+id/action_reload"
-        android:icon="@drawable/ic_action_reload"
-        android:title="@string/reload"
-        app:showAsAction="ifRoom"
-        />
-    <item
-        android:id="@+id/action_reload_future"
-        app:showAsAction="never"
-        android:title="@string/reload_future_promise"/>
-    <item
-        android:id="@+id/action_reload_simple"
-        app:showAsAction="never"
-        android:title="@string/reload_simple_promise"/>
-    <item android:id="@+id/action_select_executor"
-          app:showAsAction="never"
-          android:title="@string/run_on_main_thread"
-          android:checked="true"
-          android:checkable="true"/>
-</menu>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke
+        android:width="1px"
+        android:color="@color/colorAccent"/>
+    <solid android:color="#fff"/>
+</shape>

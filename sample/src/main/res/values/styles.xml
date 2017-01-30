@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="picture_frame">
+        <item name="android:padding">1px</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/border</item>
+    </style>
+
 </resources>

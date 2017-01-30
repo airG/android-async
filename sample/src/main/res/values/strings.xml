@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">libAsync Sample</string>
-    <string name="reload">Reload</string>
+    <string name="reload">Load new images</string>
     <string name="image_load_failed">Image load failed</string>
-    <string name="reload_future_promise">Reload top image</string>
+    <string name="reload_future_promise">Load new top image</string>
+    <string name="reload_simple_promise">Load new bottom image</string>
     <string name="future_promise">This image is loaded via a FuturePromise</string>
     <string name="simple_promise">This image is loaded via a SimplePromise</string>
-    <string name="reload_simple_promise">Reload bottom image</string>
+    <string name="run_on_main_thread">Run on UI thread</string>
+    <string name="running_main_thread">Running on main (UI) thread</string>
+    <string name="running_bg_thread">Running on background thread</string>
+    <string name="check_thread">Check execution thread</string>
 </resources>

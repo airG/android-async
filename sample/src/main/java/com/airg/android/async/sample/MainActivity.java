@@ -18,6 +18,7 @@
 
 package com.airg.android.async.sample;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,12 +28,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.airg.android.async.AsyncHelper;
+import com.airg.android.async.ThreadPool;
 import com.airg.android.async.future.Promise;
 import com.airg.android.logging.Logger;
 import com.airg.android.logging.TaggedLogger;
 import com.airg.android.util.Toaster;
 
 import java.util.Random;
+import java.util.concurrent.Executor;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,14 +59,18 @@ public class MainActivity extends AppCompatActivity {
     private String[] imageUris;
 
     private final Random rnd = new Random(System.currentTimeMillis());
-    
+
+    private Executor executor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         imageUris = getResources().getStringArray(R.array.imageUris);
+        selectExecutor(true);
         reloadFuturePromiseImage();
+        reloadSimplePromiseImage();
     }
 
     @Override
@@ -84,11 +92,26 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_reload_simple:
                 reloadSimplePromiseImage();
                 break;
+            case R.id.action_select_executor:
+                final boolean newState = !item.isChecked();
+                item.setChecked(newState);
+                selectExecutor(newState);
+                break;
+            case R.id.action_check_thread:
+                executor.execute(new ThreadCheckTask(this));
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
         return true;
+    }
+
+    private void selectExecutor(final boolean main) {
+        LOG.d("Selecting main executor? %s", main);
+        executor = main
+                ? ThreadPool.foreground()
+                : ThreadPool.background();
     }
 
     private void reloadSimplePromiseImage() {
@@ -135,5 +158,20 @@ public class MainActivity extends AppCompatActivity {
             throw new IllegalStateException("Y U SO EMPTY?");
 
         return imageUris[rnd.nextInt(imageUris.length)];
+    }
+
+    static class ThreadCheckTask implements Runnable {
+        private final Context context;
+
+        ThreadCheckTask(final Context c) {
+            context = c;
+        }
+
+        @Override
+        public void run() {
+            Toaster.dark(context, AsyncHelper.isMainThread()
+                    ? R.string.running_main_thread
+                    : R.string.running_bg_thread);
+        }
     }
 }

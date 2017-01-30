@@ -23,20 +23,19 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context="com.airg.android.async.sample.MainActivity">
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
         style="@style/picture_frame"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         tools:ignore="Suspicious0dp">
 
         <ImageView
             android:id="@+id/futurepromise"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:scaleType="centerCrop"
             tools:ignore="RtlHardcoded"/>
 
@@ -58,15 +57,14 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
         style="@style/picture_frame"
-        tools:ignore="Suspicious0dp">
+        tools:ignore="Suspicious0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/simplepromise"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             tools:ignore="RtlHardcoded"/>
