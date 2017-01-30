@@ -20,6 +20,9 @@ package com.airg.android.async.future;
 
 import android.support.annotation.Nullable;
 
+import com.airg.android.logging.Logger;
+import com.airg.android.logging.TaggedLogger;
+
 import java.util.concurrent.Executor;
 
 import lombok.EqualsAndHashCode;
@@ -57,6 +60,8 @@ import lombok.Synchronized;
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
 @EqualsAndHashCode
 public final class SimplePromise<RESULT> implements Promise<RESULT> {
+    private static final TaggedLogger LOG = Logger.tag("ASYNC:SP");
+
     private OnCompleteListener<RESULT> onCompleteListener;
     private OnFailListener onFailListener;
     private OnCancelListener onCancelListener;
@@ -87,8 +92,12 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     public void success(final RESULT r) {
         assertNotComplete();
 
-        if (cancelled) return;
+        if (cancelled) {
+            LOG.d("Promise has been cancelled. Ignoring result.");
+            return;
+        }
 
+        LOG.d("Promise kept: %s", r);
         done = true;
         result = r;
         notifyDoneMaybe();
@@ -104,9 +113,12 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     public void failed(Throwable t) {
         assertNotComplete();
 
-        if (cancelled) // if the task is already cancelled, don't report a failure
+        if (cancelled) { // if the task is already cancelled, don't report a failure
+            LOG.d("Promise has been cancelled. Ignoring failure.");
             return;
+        }
 
+        LOG.d(t, "Promise broken");
         error = t;
         done = true;
         notifyFailedMaybe();
@@ -118,8 +130,12 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     @Synchronized
     @Override
     public void cancelled() {
-        if (isDone() || isFailed()) return;
+        if (done || isFailed()){
+            LOG.d("Ignoring cancel request (already %s)", done ? "done" : "failed");
+            return;
+        }
 
+        LOG.d("Promise cancelled.");
         cancelled = true;
         done = true;
         notifyCancelledMaybe();
@@ -183,6 +199,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
      *
      * @return <code>true</code> if task was able to successfully obtain a result, <code>false</code> otherwise
      */
+    @Synchronized
     @Override
     public boolean succeeded() {
         return done && null != result;
@@ -219,9 +236,10 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     @Synchronized
     private void notifyDoneMaybe() {
-        if (!done || null == onCompleteListener)
+        if (!done || null == onCompleteListener || cancelled)
             return;
 
+        LOG.d("Notifying promise completion");
         runOnExecutor(new Runnable() {
             @Override
             public void run() {
@@ -232,9 +250,9 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
 
     @Synchronized
     private void notifyFailedMaybe() {
-        if (!isFailed() || null == onFailListener)
+        if (!isFailed() || null == onFailListener || cancelled)
             return;
-
+        LOG.d("Notifying promise failure");
         runOnExecutor(new Runnable() {
             @Override
             public void run() {
@@ -247,7 +265,7 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
     private void notifyCancelledMaybe() {
         if (!cancelled || null == onCancelListener)
             return;
-
+        LOG.d("Notifying promise cancellation");
         runOnExecutor(new Runnable() {
             @Override
             public void run() {

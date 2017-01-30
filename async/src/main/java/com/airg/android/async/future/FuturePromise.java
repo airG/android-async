@@ -18,6 +18,9 @@
 
 package com.airg.android.async.future;
 
+import com.airg.android.logging.Logger;
+import com.airg.android.logging.TaggedLogger;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -33,6 +36,8 @@ import lombok.Synchronized;
  */
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
 public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements Promise<RESULT> {
+    private static final TaggedLogger LOG = Logger.tag("ASYNC:FP");
+
     private final SimplePromise<RESULT> delegate;
 
     /**
@@ -93,6 +98,7 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     @Synchronized
     @Override
     public void success(final RESULT ignored) {
+        LOG.e("Leave the success reporting to the 'Future' please.");
         throw new UnsupportedOperationException("Only this task can set the result");
     }
 
@@ -102,6 +108,7 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     @Synchronized
     @Override
     public void failed(final Throwable t) {
+        LOG.e("Leave the failure reporting to the 'Future' please.");
         throw new UnsupportedOperationException("Only this task can set the exception");
     }
 
@@ -111,6 +118,7 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     @Synchronized
     @Override
     public void cancelled() {
+        LOG.e("Leave the cancellation reporting to the 'Future' please.");
         throw new UnsupportedOperationException("Only this task can set the cancelled flag");
     }
 
@@ -160,12 +168,15 @@ public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements P
     protected void done() {
         super.done();
 
-        if (isCancelled())
+        if (isCancelled()) {
+            LOG.d("FuturePromise completed due to cancellation");
             delegate.cancelled();
-        else
+        } else
             try {
                 delegate.success(get());
+                LOG.d("FuturePromise completed");
             } catch (ExecutionException ee) {
+                LOG.e("FuturePromise failed.");
                 delegate.failed(ee.getCause());
             } catch (Exception e) {
                 throw new RuntimeException("Unable to get result", e);

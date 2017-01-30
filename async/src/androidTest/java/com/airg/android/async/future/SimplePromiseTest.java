@@ -175,9 +175,8 @@ public class SimplePromiseTest extends BaseExecutorTest {
         Thread.sleep(taskRuntime / 4);
         task.cancel();
 
-        assertTrue("Task should be done", promise.isDone());
-        assertTrue("Task should have been cancelled", promise.isCancelled());
-        assertFalse("Task should NOT have failed", promise.isFailed());
+        // should be more than enough to properly cancel
+        Thread.sleep(taskRuntime);
 
         promise.onComplete(new Promise.OnCompleteListener<Void>() {
             @Override
@@ -191,8 +190,66 @@ public class SimplePromiseTest extends BaseExecutorTest {
             }
         });
 
-        assertTrue("Task should NOT have completed", onCompleteCalled.get());
+        assertTrue("Task should be done", promise.isDone());
+        assertTrue("Task should have been cancelled", promise.isCancelled());
+        assertFalse("Task should NOT have failed", promise.isFailed());
         assertTrue("Task should have cancelled", onCancelledCalled.get());
+        assertFalse("Task should NOT have completed", onCompleteCalled.get());
+    }
+
+    @Test
+    public void lateListenerCancelAfterExecution() throws InterruptedException, ExecutionException {
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean onCancelledCalled = new AtomicBoolean(false);
+
+        final SimplePromise<Void> promise = new SimplePromise<>();
+
+        final long taskRuntime = 1000;
+        final EchoTaskRunner<Void> task = new EchoTaskRunner<>(new EchoTask<Void>(null, taskRuntime), promise);
+
+        promise.onComplete(new Promise.OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(final Void ignore) {
+                synchronized (onCompleteCalled) {
+                    onCompleteCalled.set(true);
+                    task.cancel();
+                    safeSleep(200);
+                    onCompleteCalled.notifyAll();
+                }
+            }
+        });
+
+        assertFalse(promise.isDone());
+        ThreadPool.bg(task);
+        assertFalse(promise.isDone());
+
+        synchronized (onCompleteCalled) {
+            if (!onCancelledCalled.get())
+                onCompleteCalled.wait();
+
+            safeSleep(200);
+        }
+
+        promise.onCancel(new Promise.OnCancelListener() {
+            @Override
+            public void onCancelled() {
+                onCancelledCalled.set(true);
+            }
+        });
+
+        assertTrue("Task should be done", promise.isDone());
+        assertFalse("Task should NOT have been cancelled (because it finished first)", promise.isCancelled());
+        assertFalse("onCancel should NOT have been called", onCancelledCalled.get());
+        assertFalse("Task should NOT have failed", promise.isFailed());
+        assertTrue("Task should have completed", onCompleteCalled.get());
+    }
+
+    private void safeSleep(final long dur) {
+        try {
+            Thread.sleep(dur);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test(expected = RuntimeException.class)
@@ -290,13 +347,16 @@ public class SimplePromiseTest extends BaseExecutorTest {
         private final EchoTask<VALUE> task;
         private final Promise<VALUE> promise;
 
+        private final AtomicBoolean cancelled = new AtomicBoolean(false);
+
         EchoTaskRunner(final EchoTask<VALUE> t, final Promise<VALUE> p) {
             task = t;
             promise = p;
         }
 
         void cancel() {
-            promise.cancelled();
+            Log.i("ETR", "Cancelling Echo task");
+            cancelled.set(true);
         }
 
         @Override
@@ -304,6 +364,13 @@ public class SimplePromiseTest extends BaseExecutorTest {
             try {
                 Log.i("ETR", "Echo task starting...");
                 final VALUE result = task.call();
+
+                if (cancelled.get()) {
+                    Log.i("ETR", "Echo task finished, but it was cancelled");
+                    promise.cancelled();
+                    return;
+                }
+
                 Log.i("ETR", "Echo task finished: " + result);
                 promise.success(result);
             } catch (Exception e) {
