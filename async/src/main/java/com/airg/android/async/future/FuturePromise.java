@@ -29,157 +29,141 @@ import java.util.concurrent.FutureTask;
 import lombok.Synchronized;
 
 /**
- * A {@link FutureTask} that implements the {@link Promise} interface to provide completion, failure, and cancellation
- * callbacks.
- *
- * @author Mahram Z. Foadi
- */
-@SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
-public final class FuturePromise<RESULT> extends FutureTask<RESULT> implements Promise<RESULT> {
-    private static final TaggedLogger LOG = Logger.tag("ASYNC:FP");
+ A {@link FutureTask} that implements the {@link Promise} interface to provide completion, failure, and cancellation
+ callbacks. By default, the callbacks run on the same thread that executes this task. To force a specific thread,
+ provide
+ an {@link Executor} to {@link FuturePromise#FuturePromise(Callable, Executor)} or {@link
+FuturePromise#FuturePromise(Runnable, Object, Executor)}
+
+ @author Mahram Z. Foadi */
+@SuppressWarnings ( {"UnusedDeclaration", "WeakerAccess"})
+public final class FuturePromise<RESULT>
+  extends FutureTask<RESULT>
+  implements Promise<RESULT> {
+    private static final TaggedLogger LOG = Logger.tag ("ASYNC:FP");
 
     private final SimplePromise<RESULT> delegate;
 
     /**
-     * Wrap a {@link Callable}
-     *
-     * @param callable callable to get the result from
+     Wrap a {@link Callable}
+
+     @param callable
+     callable to get the result from
      */
-    public FuturePromise(Callable<RESULT> callable) {
-        this(callable, null);
+    public FuturePromise (Callable<RESULT> callable) {
+        this (callable, null);
     }
 
     /**
-     * Wrap a {@link Callable}
-     *
-     * @param callable callable to get the result from
+     Wrap a {@link Callable} and provide an {@link Executor} for the callbacks.
+
+     @param callable
+     callable to get the result from
+     @param executor
+     an {@link Executor} on which the callbacks will execute
      */
-    public FuturePromise(Callable<RESULT> callable, final Executor executor) {
-        super(callable);
-        delegate = new SimplePromise<>(executor);
+    public FuturePromise (Callable<RESULT> callable, final Executor executor) {
+        super (callable);
+        delegate = new SimplePromise<> (executor);
     }
 
     /**
-     * Wrap a {@link Runnable}
-     *
-     * @param runnable     Runnable to get the result from
-     * @param resultHolder The result placeholder
+     Wrap a {@link Runnable}
+
+     @param runnable
+     Runnable to get the result from
+     @param resultHolder
+     The result placeholder
      */
-    public FuturePromise(Runnable runnable, RESULT resultHolder) {
-        this(runnable, resultHolder, null);
+    public FuturePromise (Runnable runnable, RESULT resultHolder) {
+        this (runnable, resultHolder, null);
     }
 
     /**
-     * Wrap a {@link Runnable}
-     *
-     * @param runnable     Runnable to get the result from
-     * @param resultHolder The result placeholder
+     Wrap a {@link Runnable} and provide an {@link Executor} for the callbacks.
+
+     @param runnable
+     Runnable to get the result from
+     @param resultHolder
+     The result placeholder
+     @param executor
+     an {@link Executor} on which the callbacks will execute
      */
-    public FuturePromise(Runnable runnable, RESULT resultHolder, final Executor executor) {
-        super(runnable, resultHolder);
-        delegate = new SimplePromise<>(executor);
+    public FuturePromise (Runnable runnable, RESULT resultHolder, final Executor executor) {
+        super (runnable, resultHolder);
+        delegate = new SimplePromise<> (executor);
     }
 
     /**
-     * Was the promise successfully completed?
-     *
-     * @return <code>true</code> if task was able to successfully obtain a result, <code>false</code> otherwise
+     Was the promise successfully completed?
+
+     @return <code>true</code> if task was able to successfully obtain a result, <code>false</code> otherwise
      */
     @Override
-    public boolean succeeded() {
-        return isDone() && !(isFailed() || isCancelled());
+    public boolean succeeded () {
+        return isDone () && !(isFailed () || isCancelled ());
     }
 
     // ---------- Promise bits ----------
 
     /**
-     * DO NOT CALL. This isn't yours to call.
+     See {@link Promise#onComplete(OnCompleteListener)}
      */
     @Synchronized
     @Override
-    public void success(final RESULT ignored) {
-        LOG.e("Leave the success reporting to the 'Future' please.");
-        throw new UnsupportedOperationException("Only this task can set the result");
-    }
-
-    /**
-     * DO NOT CALL. This isn't yours to call.
-     */
-    @Synchronized
-    @Override
-    public void failed(final Throwable t) {
-        LOG.e("Leave the failure reporting to the 'Future' please.");
-        throw new UnsupportedOperationException("Only this task can set the exception");
-    }
-
-    /**
-     * DO NOT CALL. This isn't yours to call.
-     */
-    @Synchronized
-    @Override
-    public void cancelled() {
-        LOG.e("Leave the cancellation reporting to the 'Future' please.");
-        throw new UnsupportedOperationException("Only this task can set the cancelled flag");
-    }
-
-    /**
-     * See {@link Promise#onComplete(OnCompleteListener)}
-     */
-    @Synchronized
-    @Override
-    public final FuturePromise<RESULT> onComplete(final OnCompleteListener<RESULT> listener) {
-        delegate.onComplete(listener);
+    public final FuturePromise<RESULT> onComplete (final OnCompleteListener<RESULT> listener) {
+        delegate.onComplete (listener);
         return this;
     }
 
     /**
-     * See {@link Promise#onFail(OnFailListener)}
+     See {@link Promise#onFail(OnFailListener)}
      */
     @Synchronized
     @Override
-    public final FuturePromise<RESULT> onFail(final OnFailListener listener) {
-        delegate.onFail(listener);
+    public final FuturePromise<RESULT> onFail (final OnFailListener listener) {
+        delegate.onFail (listener);
         return this;
     }
 
     /**
-     * See {@link Promise#onCancel(OnCancelListener)}
+     See {@link Promise#onCancel(OnCancelListener)}
      */
     @Synchronized
     @Override
-    public final FuturePromise<RESULT> onCancel(final OnCancelListener listener) {
-        delegate.onCancel(listener);
+    public final FuturePromise<RESULT> onCancel (final OnCancelListener listener) {
+        delegate.onCancel (listener);
         return this;
     }
 
     /**
-     * See {@link Promise#isFailed()}
+     See {@link Promise#isFailed()}
      */
     @Synchronized
     @Override
-    public boolean isFailed() {
-        return delegate.isFailed();
+    public boolean isFailed () {
+        return delegate.isFailed ();
     }
 
     // ---------- FutureTask bits ----------
 
     @Synchronized
     @Override
-    protected void done() {
-        super.done();
+    protected void done () {
+        super.done ();
 
-        if (isCancelled()) {
-            LOG.d("FuturePromise completed due to cancellation");
-            delegate.cancelled();
+        if (isCancelled ()) {
+            LOG.d ("FuturePromise completed due to cancellation");
+            delegate.cancelled ();
         } else
             try {
-                delegate.success(get());
-                LOG.d("FuturePromise completed");
+                delegate.success (get ());
+                LOG.d ("FuturePromise completed");
             } catch (ExecutionException ee) {
-                LOG.e("FuturePromise failed.");
-                delegate.failed(ee.getCause());
+                LOG.e ("FuturePromise failed.");
+                delegate.failed (ee.getCause ());
             } catch (Exception e) {
-                throw new RuntimeException("Unable to get result", e);
+                throw new RuntimeException ("Unable to get result", e);
             }
     }
 }

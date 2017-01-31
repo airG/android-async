@@ -30,6 +30,10 @@ import com.airg.android.device.ApiLevel;
  */
 @SuppressWarnings ( {"UnusedDeclaration", "WeakerAccess"})
 public final class AsyncHelper {
+    /**
+     Is the calling code running on the main (UI) thread or a background (worker) thread?
+     @return <code>true</code> if the calling code is running on the main thread; <code>false</code> otherwise.
+     */
     @TargetApi (Build.VERSION_CODES.M)
     public static boolean isMainThread () {
         return ApiLevel.atLeast(Build.VERSION_CODES.M)
