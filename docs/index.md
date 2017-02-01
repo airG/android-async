@@ -1,7 +1,7 @@
  [![Build Status](https://travis-ci.org/airG/android-async.svg?branch=master)](https://travis-ci.org/airG/android-async) [ ![Download](https://api.bintray.com/packages/airgoss/airGOss/async/images/download.svg) ](https://bintray.com/airgoss/airGOss/async/_latestVersion)
 
 # Android Async
-The airG android async library is a group of utilities for easier management of asynchronous tasks. This library provides an [Executor Service](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html) as an appropriately sized thread pool for background execution of tasks (`Threadpool.bg()`). An [Executor](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executor.html) is provided for executing tasks on the UI thread (`Threadpool.fg()`). 
+The airG android async library is a group of utilities for easier management of asynchronous tasks. This library provides an [Executor Service](https://developer.android.com/reference/java/util/concurrent/ExecutorService.html) as an appropriately sized thread pool for background execution of tasks (`Threadpool.bg()`). An [Executor](https://developer.android.com/reference/java/util/concurrent/Executor.html) is provided for executing tasks on the UI thread (`Threadpool.fg()`). 
 
 To learn more, review the [javadoc](https://airg.github.io/android-async/javadoc/) for android-async.
 
@@ -11,10 +11,10 @@ There are also a few utility methods (in `AsyncHelper`) to ensure that code is r
 The `Threadpool` class creates an appropriately sized thread pool (based on the number of CPU cores available) on which you can schedule background tasks. If you'd like to override the size of this thread pool, call the `Threadpool.init(Threadpool.Config config)` method ___prior___ to using the executors.
 
 ### Background Tasks
-An [Executor Service](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html) is initialized and available for background task execution. To schedule a task for background execution, use `Threadpool.bg()` or any of the various `Threadpool.submit()` methods. To interact directly with the `ExecutorService`, use `Threadpool.background()` to get the instance.
+An [Executor Service](https://developer.android.com/reference/java/util/concurrent/ExecutorService.html) is initialized and available for background task execution. To schedule a task for background execution, use `Threadpool.bg()` or any of the various `Threadpool.submit()` methods. To interact directly with the `ExecutorService`, use `Threadpool.background()` to get the instance.
 
 ### Foreground Tasks
-To run a task on the foreground, use the `Threadpool.fg()` method. Alternatively, you can use the `Threadpool.foreground()` method which returns the main thread [Executor](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executor.html).
+To run a task on the foreground, use the `Threadpool.fg()` method. Alternatively, you can use the `Threadpool.foreground()` method which returns the main thread [Executor](https://developer.android.com/reference/java/util/concurrent/Executor.html).
 
 ## [AsyncHelper](/javadoc/com/airg/android/async/AsyncHelper.html)
 The `AsyncHelper` class includes a few static utility methods to determine whether code is running on the main thread as well as methods that ensure (by throwing exceptions) that certain code is running _on_ or _off_ the UI thread.
