@@ -35,7 +35,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by mahramf.
+ * @author Mahram Z. Foadi
  */
 @RunWith(AndroidJUnit4.class)
 public class SimplePromiseTest extends BaseExecutorTest {

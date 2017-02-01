@@ -18,17 +18,10 @@
 
 package com.airg.android.async.future;
 
-import android.support.test.runner.AndroidJUnit4;
-
-import org.junit.runner.RunWith;
-
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * Created by mahramf.
+ * @author Mahram Z. Foadi
  */
 class BaseExecutorTest {
     static final class EchoTask<VALUE> implements Callable<VALUE> {
