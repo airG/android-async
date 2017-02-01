@@ -345,11 +345,11 @@ public class SimplePromiseTest extends BaseExecutorTest {
     private static class EchoTaskRunner<VALUE> implements Runnable {
 
         private final EchoTask<VALUE> task;
-        private final Promise<VALUE> promise;
+        private final SimplePromise<VALUE> promise;
 
         private final AtomicBoolean cancelled = new AtomicBoolean(false);
 
-        EchoTaskRunner(final EchoTask<VALUE> t, final Promise<VALUE> p) {
+        EchoTaskRunner(final EchoTask<VALUE> t, final SimplePromise<VALUE> p) {
             task = t;
             promise = p;
         }

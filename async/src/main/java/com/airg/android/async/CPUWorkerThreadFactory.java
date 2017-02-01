@@ -25,7 +25,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- Created by mahra on 2016-09-22.
+ * Threadfactory for background executor
+ * @author Mahram Z. Foadi
  */
 
 @SuppressWarnings ( {"UnusedDeclaration", "WeakerAccess"})

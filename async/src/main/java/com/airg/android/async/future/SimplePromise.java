@@ -59,7 +59,7 @@ import lombok.Synchronized;
  */
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
 @EqualsAndHashCode
-public final class SimplePromise<RESULT> implements Promise<RESULT> {
+public class SimplePromise<RESULT> implements Promise<RESULT> {
     private static final TaggedLogger LOG = Logger.tag("ASYNC:SP");
 
     private OnCompleteListener<RESULT> onCompleteListener;
@@ -88,7 +88,6 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
      * @param r obtained result
      */
     @Synchronized
-    @Override
     public void success(final RESULT r) {
         assertNotComplete();
 
@@ -109,7 +108,6 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
      * @param t cause of the failure
      */
     @Synchronized
-    @Override
     public void failed(Throwable t) {
         assertNotComplete();
 
@@ -128,7 +126,6 @@ public final class SimplePromise<RESULT> implements Promise<RESULT> {
      * Mark task as cancelled
      */
     @Synchronized
-    @Override
     public void cancelled() {
         if (done || isFailed()){
             LOG.d("Ignoring cancel request (already %s)", done ? "done" : "failed");

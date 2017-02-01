@@ -18,8 +18,6 @@
 
 package com.airg.android.async.future;
 
-import android.support.annotation.Nullable;
-
 /**
  * The <code>Promise</code> interface is very similar to a {@link java.util.concurrent.Future}, but it provides
  * callbacks for completion, failure, and cancellation
@@ -30,25 +28,6 @@ import android.support.annotation.Nullable;
 
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
 public interface Promise<RESULT> {
-
-    /**
-     * Report task completion
-     *
-     * @param result Task result
-     */
-    void success(RESULT result);
-
-    /**
-     * Report task failure
-     *
-     * @param t cause of the failure
-     */
-    void failed(@Nullable Throwable t);
-
-    /**
-     * Report task cancellation
-     */
-    void cancelled();
 
     /**
      * Add an {@link OnCompleteListener} callback to be notified of completion
@@ -67,7 +46,7 @@ public interface Promise<RESULT> {
     Promise<RESULT> onFail(final OnFailListener listener);
 
     /**
-     * Add on {@link OnCancelListener} callback to be notified on cancellation
+     * Add an {@link OnCancelListener} callback to be notified on cancellation
      *
      * @param listener listener to notify on cancellation
      * @return this instance to chain more callbacks
