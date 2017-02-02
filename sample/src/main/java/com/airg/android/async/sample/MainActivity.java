@@ -30,7 +30,7 @@ import android.widget.ProgressBar;
 
 import com.airg.android.async.AsyncHelper;
 import com.airg.android.async.ThreadPool;
-import com.airg.android.async.future.Promise;
+import com.airg.android.async.promise.Promise;
 import com.airg.android.logging.Logger;
 import com.airg.android.logging.TaggedLogger;
 import com.airg.android.util.Toaster;

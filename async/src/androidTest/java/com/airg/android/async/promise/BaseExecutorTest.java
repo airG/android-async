@@ -16,7 +16,7 @@
  * ***************************************************************************
  */
 
-package com.airg.android.async.future;
+package com.airg.android.async.promise;
 
 import java.util.concurrent.Callable;
 

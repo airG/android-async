@@ -16,7 +16,7 @@
  * ***************************************************************************
  */
 
-package com.airg.android.async.future;
+package com.airg.android.async.promise;
 
 import android.support.test.runner.AndroidJUnit4;
 

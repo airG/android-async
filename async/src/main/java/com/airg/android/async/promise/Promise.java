@@ -16,7 +16,7 @@
  * ***************************************************************************
  */
 
-package com.airg.android.async.future;
+package com.airg.android.async.promise;
 
 /**
  * The <code>Promise</code> interface is very similar to a {@link java.util.concurrent.Future}, but it provides
