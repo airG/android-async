@@ -16,7 +16,7 @@
  * ***************************************************************************
  */
 
-package com.airg.android.async.future;
+package com.airg.android.async.promise;
 
 import com.airg.android.logging.Logger;
 import com.airg.android.logging.TaggedLogger;

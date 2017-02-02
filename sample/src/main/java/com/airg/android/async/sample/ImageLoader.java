@@ -22,9 +22,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.airg.android.async.ThreadPool;
-import com.airg.android.async.future.FuturePromise;
-import com.airg.android.async.future.Promise;
-import com.airg.android.async.future.SimplePromise;
+import com.airg.android.async.promise.FuturePromise;
+import com.airg.android.async.promise.Promise;
+import com.airg.android.async.promise.SimplePromise;
 import com.airg.android.logging.Logger;
 import com.airg.android.logging.TaggedLogger;
 import com.bumptech.glide.Glide;
