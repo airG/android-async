@@ -9,3 +9,4 @@
 /captures
 .externalNativeBuild
 docs/_site
+.idea/markdown-exported-files.xml
