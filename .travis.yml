@@ -13,7 +13,8 @@ android:
     - platform-tools
     - tools
     - build-tools-25.0.1
-    #- android-10
+    - android-10
+    - android-17
     - android-24
     - android-25
     - extra-google-google_play_services
@@ -22,20 +23,23 @@ android:
 
     # emulators
     #- sys-img-armeabi-v7a-android-10
+    #- sys-img-armeabi-v7a-android-17
     - sys-img-armeabi-v7a-android-24
-    #- sys-img-arm64-v8a-android-24
 
 env:
-  #- ANDROID_TARGET=android-24 ANDROID_ABI=default/arm64-v8a
-  - ANDROID_TARGET=android-24 ANDROID_ABI=default/armeabi-v7a
-  #- ANDROID_TARGET=android-10 ANDROID_ABI=default/armeabi-v7a
+  - ANDROID_TARGET=android-10 ANDROID_ABI=default/armeabi-v7a
+  #- ANDROID_TARGET=android-17 ANDROID_ABI=default/armeabi-v7a
+  #- ANDROID_TARGET=android-24 ANDROID_ABI=default/armeabi-v7a
+
 
 before_install:
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
-  - emulator -avd test -no-skin -no-audio -no-window &
+  - echo no | android create avd --force -n async -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd async -no-skin -no-audio -no-window &
 
 before_script:
-  - android-wait-for-emulator
+  - echo "Waiting for emulator"
+  - adb wait-for-device
+  - echo "Emulator available"
   - adb shell input keyevent 82 &
 
 script:
