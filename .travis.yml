@@ -20,8 +20,6 @@ android:
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-
-    # emulators
     - sys-img-armeabi-v7a-android-10
     - sys-img-armeabi-v7a-android-17
     - sys-img-armeabi-v7a-android-24
@@ -42,4 +40,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  ./gradlew build connectedCheck
+  ./gradlew connectedCheck
