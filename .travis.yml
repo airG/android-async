@@ -1,9 +1,10 @@
 language: android
+jdk: oraclejdk7
 sudo: required
 
 branches:
   only:
-    - master
+    - travis
 
 git:
   depth: 3
@@ -40,4 +41,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  ./gradlew connectedCheck
+  ./gradlew --no-daemon connectedCheck
