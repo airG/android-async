@@ -15,19 +15,16 @@ android:
     - tools
     - build-tools-25.0.1
     - android-10
-    - android-17
     - android-23
     - android-25
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-10
-    - sys-img-armeabi-v7a-android-17
     - sys-img-armeabi-v7a-android-23
 
 env:
   - ANDROID_TARGET=android-10 ANDROID_ABI=default/armeabi
-  - ANDROID_TARGET=android-17 ANDROID_ABI=default/armeabi-v7a
   - ANDROID_TARGET=android-23 ANDROID_ABI=default/armeabi-v7a
 
 before_install:
