@@ -34,13 +34,13 @@ android {
 }
 
 dependencies {
-    compile project(':async')
-    compile 'com.airg.android:misc:0.01.02@aar'
-    compile 'com.airg.android:logger:0.05.00@aar'
-    compile "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
-    compile 'com.github.bumptech.glide:glide:3.6.1'
-    compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
-    provided "org.projectlombok:lombok:$LOMBOK_VERSION"
+    implementation project(':async')
+    implementation 'com.airg.android:misc:0.01.02@aar'
+    implementation "com.airg.android:logger:$LOGGER_VERSION"
+    implementation "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
+    compileOnly "org.projectlombok:lombok:$LOMBOK_VERSION"
     annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
     annotationProcessor "org.projectlombok:lombok:$LOMBOK_VERSION"
 

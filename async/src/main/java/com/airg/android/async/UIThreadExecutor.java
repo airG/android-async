@@ -25,7 +25,8 @@ import android.support.annotation.NonNull;
 import java.util.concurrent.Executor;
 
 /**
- Created by mahra on 2016-09-22.
+ * Executes tasks on the UI (main) thread
+ * @author Mahram Z. Foadi
  */
 final class UIThreadExecutor
   implements Executor {

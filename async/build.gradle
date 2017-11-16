@@ -64,17 +64,17 @@ android {
 }
 
 dependencies {
-    compile 'com.airg.android:device:0.07.01'
-    compile 'com.airg.android:logger:0.05.00'
-    compile "com.android.support:support-annotations:$SUPPORT_LIB_VERSION"
-    provided 'org.projectlombok:lombok:1.16.10'
+    implementation 'com.airg.android:device:0.08.00'
+    implementation "com.airg.android:logger:$LOGGER_VERSION"
+    implementation "com.android.support:support-annotations:$SUPPORT_LIB_VERSION"
+    compileOnly 'org.projectlombok:lombok:1.16.10'
     annotationProcessor 'org.projectlombok:lombok:1.16.10'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
 
 apply from: 'https://raw.githubusercontent.com/airG/JCenter/master/install.gradle'
