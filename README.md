@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/airG/android-async.svg?branch=master)](https://travis-ci.org/airG/android-async)
 [ ![Download](https://api.bintray.com/packages/airgoss/airGOss/async/images/download.svg) ](https://bintray.com/airgoss/airGOss/async/_latestVersion)
 
 # Android Async
