@@ -35,8 +35,8 @@ android {
 
 dependencies {
     implementation project(':async')
-    implementation 'com.airg.android:misc:0.01.02@aar'
-    implementation "com.airg.android:logger:$LOGGER_VERSION"
+    //implementation 'com.airg.android:misc:0.01.02@aar'
+    //implementation "com.airg.android:logger:$LOGGER_VERSION"
     implementation "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"

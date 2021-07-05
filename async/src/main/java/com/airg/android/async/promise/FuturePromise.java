@@ -18,8 +18,8 @@
 
 package com.airg.android.async.promise;
 
-import com.airg.android.logging.Logger;
-import com.airg.android.logging.TaggedLogger;
+//import com.airg.android.logging.Logger;
+//import com.airg.android.logging.TaggedLogger;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -40,7 +40,7 @@ FuturePromise#FuturePromise(Runnable, Object, Executor)}
 public final class FuturePromise<RESULT>
   extends FutureTask<RESULT>
   implements Promise<RESULT> {
-    private static final TaggedLogger LOG = Logger.tag ("ASYNC:FP");
+    //private static final TaggedLogger LOG = Logger.tag ("ASYNC:FP");
 
     private final SimplePromise<RESULT> delegate;
 
@@ -153,14 +153,14 @@ public final class FuturePromise<RESULT>
         super.done ();
 
         if (isCancelled ()) {
-            LOG.d ("FuturePromise completed due to cancellation");
+            //LOG.d ("FuturePromise completed due to cancellation");
             delegate.cancelled ();
         } else
             try {
                 delegate.success (get ());
-                LOG.d ("FuturePromise completed");
+                //LOG.d ("FuturePromise completed");
             } catch (ExecutionException ee) {
-                LOG.e ("FuturePromise failed.");
+                //LOG.e ("FuturePromise failed.");
                 delegate.failed (ee.getCause ());
             } catch (Exception e) {
                 throw new RuntimeException ("Unable to get result", e);

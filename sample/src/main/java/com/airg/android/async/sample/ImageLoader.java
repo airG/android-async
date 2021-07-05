@@ -25,8 +25,8 @@ import com.airg.android.async.ThreadPool;
 import com.airg.android.async.promise.FuturePromise;
 import com.airg.android.async.promise.Promise;
 import com.airg.android.async.promise.SimplePromise;
-import com.airg.android.logging.Logger;
-import com.airg.android.logging.TaggedLogger;
+//import com.airg.android.logging.Logger;
+//import com.airg.android.logging.TaggedLogger;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.Callable;
  */
 
 final class ImageLoader {
-    private static TaggedLogger LOG = Logger.tag("LOADR");
+    //private static TaggedLogger LOG = Logger.tag("LOADR");
 
     static Bitmap load(final Context context, final String imageUri) throws Exception {
         return new BitmapCallable(context, imageUri).call();
@@ -51,10 +51,10 @@ final class ImageLoader {
             public void run() {
                 try {
                     promise.success(load(context, imageUri));
-                    LOG.d("Simple: Loaded image");
+                    //LOG.d("Simple: Loaded image");
                 } catch (Exception e) {
                     promise.failed(e);
-                    LOG.e(e, "Simple: Load failed");
+                    //LOG.e(e, "Simple: Load failed");
                 }
             }
         });

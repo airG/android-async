@@ -64,11 +64,12 @@ android {
 }
 
 dependencies {
-    implementation 'com.airg.android:device:0.08.00'
-    implementation "com.airg.android:logger:$LOGGER_VERSION"
+    //implementation 'com.airg.android:device:0.08.00'
+    implementation 'com.github.airG:android-device:0.08.01'
+    //implementation "com.airg.android:logger:$LOGGER_VERSION"
     implementation "com.android.support:support-annotations:$SUPPORT_LIB_VERSION"
-    compileOnly 'org.projectlombok:lombok:1.16.10'
-    annotationProcessor 'org.projectlombok:lombok:1.16.10'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

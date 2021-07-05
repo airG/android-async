@@ -1,8 +1,8 @@
 package com.airg.android.async.promise;
 
 import com.airg.android.async.ThreadPool;
-import com.airg.android.logging.Logger;
-import com.airg.android.logging.TaggedLogger;
+//import com.airg.android.logging.Logger;
+//import com.airg.android.logging.TaggedLogger;
 
 import java.util.concurrent.Executor;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
 @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
 public abstract class AbstractPromise<RESULT>
         implements Promise<RESULT>, Runnable {
-    protected static final TaggedLogger LOG = Logger.tag("ASYNC:AP");
+    //protected static final TaggedLogger LOG = Logger.tag("ASYNC:AP");
 
     private final SimplePromise<RESULT> promise;
 
@@ -53,7 +53,7 @@ public abstract class AbstractPromise<RESULT>
                 promise.success(result);
             }
         } catch (Exception e) {
-            LOG.e(e);
+            //LOG.e(e);
             synchronized (promise) {
                 promise.failed(e);
             }
@@ -71,7 +71,7 @@ public abstract class AbstractPromise<RESULT>
             try {
                 abort();
             } catch (Exception e) {
-                LOG.e(e, "abort() failed.");
+                //LOG.e(e, "abort() failed.");
             } finally {
                 promise.cancelled();
             }

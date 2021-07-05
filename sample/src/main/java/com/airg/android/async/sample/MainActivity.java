@@ -31,9 +31,9 @@ import android.widget.ProgressBar;
 import com.airg.android.async.AsyncHelper;
 import com.airg.android.async.ThreadPool;
 import com.airg.android.async.promise.Promise;
-import com.airg.android.logging.Logger;
-import com.airg.android.logging.TaggedLogger;
-import com.airg.android.util.Toaster;
+//import com.airg.android.logging.Logger;
+//import com.airg.android.logging.TaggedLogger;
+//import com.airg.android.util.Toaster;
 
 import java.util.Random;
 import java.util.concurrent.Executor;
@@ -42,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    private final TaggedLogger LOG = Logger.tag("MAIN");
+    //private final TaggedLogger LOG = Logger.tag("MAIN");
 
     @BindView(R.id.futurepromise)
     ImageView futurePromiseImageView;
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectExecutor(final boolean main) {
-        LOG.d("Selecting main executor? %s", main);
+        //LOG.d("Selecting main executor? %s", main);
         executor = main
                 ? ThreadPool.foreground()
                 : ThreadPool.background();
@@ -126,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
         }).onFail(new Promise.OnFailListener() {
             @Override
             public void onFailed(Throwable error) {
-                LOG.e(error);
-                Toaster.light(MainActivity.this, R.string.image_load_failed);
+                //LOG.e(error);
+                //Toaster.light(MainActivity.this, R.string.image_load_failed);
                 simplePromiseProgress.setVisibility(View.GONE);
             }
         });
@@ -146,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
                 }).onFail(new Promise.OnFailListener() {
             @Override
             public void onFailed(Throwable error) {
-                LOG.e(error);
-                Toaster.light(MainActivity.this, R.string.image_load_failed);
+                //LOG.e(error);
+                //Toaster.light(MainActivity.this, R.string.image_load_failed);
                 futurePromiseProgress.setVisibility(View.GONE);
             }
         });
@@ -169,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            Toaster.dark(context, AsyncHelper.isMainThread()
-                    ? R.string.running_main_thread
-                    : R.string.running_bg_thread);
+//            Toaster.dark(context, AsyncHelper.isMainThread()
+//                    ? R.string.running_main_thread
+//                    : R.string.running_bg_thread);
         }
     }
 }
